@@ -1,0 +1,36 @@
+{
+  "name": "serverless-tencent-tools",
+  "description": "Tencent Cloud Tools For Serverless Framewoek",
+  "version": "0.0.5",
+  "main": "./index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "Tencent Cloud",
+    "Serverless Framework",
+    "Cloud function"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --fix --cache"
+  },
+  "author": "Dfounderliu",
+  "license": "Apache",
+  "dependencies": {
+    "urlencode": "^1.1.0",
+    "request": "^2.88.0",
+    "uuid": "^3.3.3",
+    "qrcode-terminal": "^0.12.0",
+    "qrcode": "^1.4.4",
+    "tencentcloud-sdk-nodejs": "^3.0.87"
+  },
+  "devDependencies": {
+    "babel-eslint": "9.0.0",
+    "eslint": "5.6.0",
+    "eslint-config-prettier": "^3.6.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "prettier": "^1.18.2"
+  }
+}
