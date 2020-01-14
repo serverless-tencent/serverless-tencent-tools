@@ -9,6 +9,7 @@
 - [获取用户信息](#获取用户信息)
 - [一键登录功能](#一键登录功能)
 - [检测用户实名](#检测用户实名)
+- [判断中国用户](#判断中国用户)
 
 
 ## 基本功能
@@ -338,3 +339,38 @@ userAuthInfo.getUserAuth()
 | 参数 | 描述 | 
 | --- | --- | 
 | Authentication |  0表示未认证，1表示已认证 |
+
+
+### 判断中国用户
+
+该接口可以判断是否是中国用户
+
+基本使用方法(IsInChina)：
+```javascript
+const Others = require('../sdk/others')
+
+class OthersAction {
+	async getIsInChina() {
+		const isInChina = new Others.IsInChina()
+		const inChina = await isInChina.inChina()
+		console.log(inChina)
+	}
+}
+
+new OthersAction().getIsInChina()
+
+```
+
+输出结果：
+```javascript
+{ IsInChina: true }
+```
+
+输出参数：
+
+| 参数 | 描述 | 
+| --- | --- | 
+| IsInChina | 输出参数true或false，如果是true，表示是中国用户，否则表示非中国用户 |
+
+
+（* 该接口目前为1.0版本，后期会增加其复杂度，但是接口规范不会变。）
