@@ -1,4 +1,4 @@
 module.exports = {
 	IsInChina : require('./isInChina'),
-	DataReport : require('./DataReport')
+	DataReport : require('./dataReport')
 }
