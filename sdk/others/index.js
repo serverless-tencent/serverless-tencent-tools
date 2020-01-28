@@ -1,3 +1,4 @@
 module.exports = {
-	IsInChina : require('./isInChina')
+	IsInChina : require('./isInChina'),
+	DataReport : require('./DataReport')
 }
