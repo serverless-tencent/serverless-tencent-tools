@@ -2,13 +2,17 @@ const request = require('request')
 const os = require('os')
 
 class GetUserAuthInfo {
-  async isAuth(ownerUin) {
+  async isAuth(ownerUin, inputs = {}) {
     var url = 'http://service-ocnymoks-1258344699.gz.apigw.tencentcs.com/release/getUserAuthInfo'
     var requestData = {
       uin: ownerUin,
       os_platform: os.platform(),
       os_release: os.release(),
-      os_type: os.type()
+      os_type: os.type(),
+      client: inputs.client,
+      remark: inputs.remark,
+      pid: process.pid,
+      project: inputs.project
     }
 
     return new Promise(function(resolve, rejecte) {
