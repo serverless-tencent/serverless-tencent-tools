@@ -18,12 +18,17 @@
   "author": "Dfounderliu",
   "license": "Apache",
   "dependencies": {
-    "urlencode": "^1.1.0",
-    "request": "^2.88.0",
-    "uuid": "^3.3.3",
-    "qrcode-terminal": "^0.12.0",
+    "archiver": "^3.1.1",
+    "fs-extra": "^8.1.0",
+    "globby": "^11.0.0",
+    "qcloudapi-sdk": "^0.2.1",
     "qrcode": "^1.4.4",
-    "tencentcloud-sdk-nodejs": "^3.0.87"
+    "qrcode-terminal": "^0.12.0",
+    "ramda": "^0.27.0",
+    "request": "^2.88.0",
+    "tencentcloud-sdk-nodejs": "^3.0.117",
+    "urlencode": "^1.1.0",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "babel-eslint": "9.0.0",

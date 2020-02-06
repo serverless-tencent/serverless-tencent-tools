@@ -341,6 +341,46 @@ userAuthInfo.getUserAuth()
 | Authentication |  0表示未认证，1表示已认证 |
 
 
+### Websocket Api
+
+create websocket instance
+
+```javascript
+const {Apigateway} = require('serverless-tencent-tools');
+
+const ws = new Apigateway.Websocket(tencent_could_secret_id, tencent_could_secret_key, tencent_could_tmp_token, 'ap-guangzhou');
+
+// create a websocket instance
+const result = await ws.create();
+console.log(result);
+// result:
+// {
+//   address: 'ws://service-xxx-xxx.gz.apigw.tencentcs.com/release/websocket',
+//   serviceId: 'service-xxx',
+//   apiId: 'api-xxx',
+//   scf: {
+//     register: {
+//       functionName: 'scf_ws_create_1580968283',
+//       namspace: 'default',
+//       qualifier: '$LATEST'
+//     },
+//     data: {
+//       functionName: 'scf_ws_data_1580968283',
+//       namspace: 'default',
+//       qualifier: '$LATEST'
+//     },
+//     destroy: {
+//       functionName: 'scf_ws_destroy_1580968283',
+//       namspace: 'default',
+//       qualifier: '$LATEST'
+//     }
+//   }
+// }
+
+// clean websocket all resource
+await ws.destroy(result.serviceId, result.apiId, result.scf);
+```
+
 ### 判断中国用户
 
 该接口可以判断是否是中国用户
