@@ -14,6 +14,7 @@ const {
   DeleteService,
   ReleaseService,
   UnReleaseService,
+  isExists,
   DescribeApi,
   ZipArchive } = require('./library/util');
 
@@ -67,10 +68,11 @@ class Websocket {
     const req = new models.CreateFunctionRequest();
     req.from_json_string(JSON.stringify(createFuncRequest));
     let handler = util.promisify(this.api.scfClient.CreateFunction.bind(this.api.scfClient));
+    if (isExists(output)) 
+      fs.unlinkSync(output);
+
     try {
       await handler(req);
-      fs.accessSync(output);
-      fs.unlinkSync(output);
     } catch (e) {
       throw e
     }
@@ -89,10 +91,12 @@ class Websocket {
 
     req.from_json_string(JSON.stringify(createFuncRequest));
     handler = util.promisify(this.api.scfClient.CreateFunction.bind(this.api.scfClient));
+
+    if (isExists(output)) 
+      fs.unlinkSync(output);
+
     try {
       await handler(req);
-      fs.accessSync(output);
-      fs.unlinkSync(output);
     } catch (e) {
       throw e
     }
@@ -111,10 +115,12 @@ class Websocket {
 
     req.from_json_string(JSON.stringify(createFuncRequest));
     handler = util.promisify(this.api.scfClient.CreateFunction.bind(this.api.scfClient));
+
+    if (isExists(output)) 
+      fs.unlinkSync(output);
+
     try {
       await handler(req);
-      fs.accessSync(output);
-      fs.unlinkSync(output);
     } catch (e) {
       throw e
     }
@@ -182,11 +188,10 @@ class Websocket {
         dirName = 'scf_ws_destroy';
       const codePath = util.format('%s/example/%s', __dirname, dirName);
       const tmpPath = util.format('%s/%s', os.tmpdir(), dirName);
-      try {
-        fs.accessSync(tmpPath);
-      } catch (err) {
-        fs.mkdirSync(tmpPath)
-      }
+
+      if (!isExists(tmpPath)) 
+        fs.mkdirSync(tmpPath);
+      
       copyAndReplaceCode(codePath, tmpPath, function (src_file, dst_file, name) {
         if (name == 'index.py') {
           const oldContent = fs.readFileSync(src_file);
@@ -230,10 +235,11 @@ class Websocket {
       const req = new models.UpdateFunctionCodeRequest();
       req.from_json_string(JSON.stringify(updateArgs));
       const handler = util.promisify(this.api.scfClient.UpdateFunctionCode.bind(this.api.scfClient));
+
+      if (isExists(output)) 
+        fs.unlinkSync(output);
       try {
         await handler(req);
-        fs.accessSync(output);
-        fs.unlinkSync(output);
       } catch (e) {
         throw e
       }

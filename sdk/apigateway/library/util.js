@@ -1,8 +1,9 @@
-const path = require('path')
-const archiver = require('archiver')
-const globby = require('globby')
-const { contains, isNil, last, split } = require('ramda')
-const { createReadStream, createWriteStream } = require('fs-extra')
+const path = require('path');
+const fs = require('fs');
+const archiver = require('archiver');
+const globby = require('globby');
+const { contains, isNil, last, split } = require('ramda');
+const { createReadStream, createWriteStream } = require('fs-extra');
 
 function HttpError(code, message) {
   this.code = code || 0
@@ -238,6 +239,15 @@ const CreateService = ({ apig, ...inputs }) => {
 }
 
 
+const isExists = (path)=> {
+    try {
+        fs.accessSync(path);
+    return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 module.exports = {
   CreateApi,
   DeleteApi,
@@ -246,5 +256,6 @@ module.exports = {
   ReleaseService,
   UnReleaseService,
   DescribeApi,
-  ZipArchive
+  ZipArchive,
+  isExists
 }
