@@ -32,7 +32,7 @@ class BindRole {
     return new camClient(cred, 'ap-guangzhou', new clientProfile('HmacSHA256', httpProfile))
   }
 
-  async bindQcsRole() {
+  async bindSLSQcsRole() {
     const rp = 200
     let roleName = 'SLS_QcsRole'
     let pageRoleCount = 200
