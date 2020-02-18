@@ -10,6 +10,7 @@
 - [一键登录功能](#一键登录功能)
 - [检测用户实名](#检测用户实名)
 - [判断中国用户](#判断中国用户)
+- [ServerlessApi](#ServerlessApi)
 
 
 ## 基本功能
@@ -372,5 +373,25 @@ new OthersAction().getIsInChina()
 | --- | --- | 
 | IsInChina | 输出参数true或false，如果是true，表示是中国用户，否则表示非中国用户 |
 
+
+### ServerlessApi
+
+serverless api
+
+```javascript
+const {Serverless} = require('serverless-tencent-tools');
+
+const sls = new Serverless({
+  appid: app_id,
+  secret_id: secret_id,
+  secret_key: secret_key,
+  options: {
+    region: 'ap-guangzhou'
+  }
+});
+
+const ret = await sls.getComponentAndVersions('Component name');
+console.log(ret)
+```
 
 （* 该接口目前为1.0版本，后期会增加其复杂度，但是接口规范不会变。）
