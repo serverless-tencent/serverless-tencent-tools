@@ -1,13 +1,16 @@
 'use strict';
 const util = require('util');
 const assert = require('assert');
-const Tencentcloud = require('tencentcloud-sdk-nodejs');
-const ClientProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/client_profile.js');
-const HttpProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/http_profile.js');
-const SlsClient = Tencentcloud.sls.v20200205.Client;
-const SlsModels = Tencentcloud.sls.v20200205.Models;
-const { Credential } = Tencentcloud.common;
+const {sls, common} = require('../../library');
+const ClientProfile = common.ClientProfile;
+const HttpProfile = common.HttpProfile;
+const Credential = common.Credential;
+const SlsClient = sls.v20200205.Client;
+const SlsModels = sls.v20200205.Models;
 const { BindRole } = require('../cam');
+// const ClientProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/client_profile.js');
+// const HttpProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/http_profile.js');
+// const { Credential } = Tencentcloud.common;
 
 class Serverless {
     constructor ({appid, secret_id, secret_key, options}) {
@@ -151,52 +154,52 @@ class Serverless {
     }
 
 
-    async unpublishComponentVersion(name, version) {
-        const componentVersion = {
-            Name: name, 
-            ComponentVersion: version
-        }
-        const req = new SlsModels.UnpublishComponentVersionRequest();
-        req.from_json_string(JSON.stringify(componentVersion));
-        return await this._call('UnpublishComponentVersion', req);
-    }
+    // async unpublishComponentVersion(name, version) {
+    //     const componentVersion = {
+    //         Name: name, 
+    //         ComponentVersion: version
+    //     }
+    //     const req = new SlsModels.UnpublishComponentVersionRequest();
+    //     req.from_json_string(JSON.stringify(componentVersion));
+    //     return await this._call('UnpublishComponentVersion', req);
+    // }
     
 
-    async publishComponentVersion({name, componentVersion, org, author, description, keywords, license}) {
+    // async publishComponentVersion({name, componentVersion, org, author, description, keywords, license}) {
         
-        const camRole = new BindRole.BindRole({
-            SecretId: this.secret_id, 
-            SecretKey: this.secret_key,
-            token: this.options.token
-        });
+    //     const camRole = new BindRole.BindRole({
+    //         SecretId: this.secret_id, 
+    //         SecretKey: this.secret_key,
+    //         token: this.options.token
+    //     });
 
-        camRole.bindSLSQcsRole();
+    //     camRole.bindSLSQcsRole();
 
-        const pubComVersionRequest = {
-            Name: name,
-            ComponentVersion: componentVersion,
-            Org: org,
-            Author: author,
-            Description: description,
-            Keywords: keywords,
-            License: license
-        }
+    //     const pubComVersionRequest = {
+    //         Name: name,
+    //         ComponentVersion: componentVersion,
+    //         Org: org,
+    //         Author: author,
+    //         Description: description,
+    //         Keywords: keywords,
+    //         License: license
+    //     }
 
-        const req = new SlsModels.PublishComponentVersionRequest()
-        req.from_json_string(JSON.stringify(pubComVersionRequest));
-        return await this._call('PublishComponentVersion', req);
-    }
+    //     const req = new SlsModels.PublishComponentVersionRequest()
+    //     req.from_json_string(JSON.stringify(pubComVersionRequest));
+    //     return await this._call('PublishComponentVersion', req);
+    // }
 
 
-    async fetchComponentMetadata(name, version) {
-        const componentVersion = {
-            Name: name, 
-            ComponentVersion: version
-        }
-        const req = new SlsModels.FetchComponentMetadataRequest();
-        req.from_json_string(JSON.stringify(componentVersion));
-        return await this._call('FetchComponentMetadata', req);
-    }
+    // async fetchComponentMetadata(name, version) {
+    //     const componentVersion = {
+    //         Name: name, 
+    //         ComponentVersion: version
+    //     }
+    //     const req = new SlsModels.FetchComponentMetadataRequest();
+    //     req.from_json_string(JSON.stringify(componentVersion));
+    //     return await this._call('FetchComponentMetadata', req);
+    // }
 }
 
 module.exports = Serverless;
