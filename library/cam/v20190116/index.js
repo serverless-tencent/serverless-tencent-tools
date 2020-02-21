@@ -1,4 +1,4 @@
 module.exports = {
-  Client: require('./sls_client'),
+  Client: require('./cam_client'),
   Models: require('./models')
 }

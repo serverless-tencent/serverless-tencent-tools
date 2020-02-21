@@ -4,8 +4,8 @@ class UserInformation {
   async getUserInformation() {
     const userInformation = new GetUserInformation()
     const auth = {
-      SecretId: '****',
-      SecretKey: '****'
+      SecretId: '',
+      SecretKey: ''
     }
     console.log(await userInformation.getUserInformation(auth))
   }

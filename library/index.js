@@ -1,5 +1,6 @@
-'use strict';
 module.exports = {
-    sls: require('./sls'),
-    common: require('./common')
+  sls: require('./sls'),
+  cam: require('./cam'),
+  scf: require('./scf'),
+  common: require('./common')
 }
