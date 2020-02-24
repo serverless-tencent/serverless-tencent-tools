@@ -45,7 +45,7 @@ class ScfRealTimeLogs {
     const keys = Object.keys(params)
     keys.sort()
     for (const k in keys) {
-      const tempStr = keys[k] == 'Signature' ? urlencode(params[keys[k]]) : params[keys[k]]
+      const tempStr = keys[k] == 'Signature' ? encodeURIComponent(params[keys[k]]) : params[keys[k]]
       strParam += '&' + keys[k] + '=' + tempStr
     }
     return strParam
@@ -66,7 +66,7 @@ class ScfRealTimeLogs {
     const keys = Object.keys(params)
     keys.sort()
     for (const k in keys) {
-      const tempStr = keys[k] == 'Signature' ? urlencode(params[keys[k]]) : params[keys[k]]
+      const tempStr = keys[k] == 'Signature' ? encodeURIComponent(params[keys[k]]) : params[keys[k]]
       strParam += '&' + keys[k] + '=' + tempStr
     }
 
@@ -77,7 +77,7 @@ class ScfRealTimeLogs {
       '&Timeout=' +
       timeout +
       '&AppidSignature=' +
-      urlencode(this.getAppid(auth))
+      encodeURIComponent(this.getAppid(auth))
     )
   }
 }
