@@ -1,7 +1,7 @@
-var BufferUtil = require('../utils/buffer')
+// var BufferUtil = require('../utils/buffer')
 
-var EXP_TABLE = BufferUtil.alloc(512)
-var LOG_TABLE = BufferUtil.alloc(256)
+var EXP_TABLE = Buffer.alloc(512)
+var LOG_TABLE = Buffer.alloc(256)
 /**
  * Precompute the log and anti-log tables for faster computation later
  *

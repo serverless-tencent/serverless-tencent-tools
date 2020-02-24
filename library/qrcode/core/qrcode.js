@@ -1,22 +1,230 @@
-var BufferUtil = require('../utils/buffer')
+// var BufferUtil = require('../utils/buffer')
 var Utils = require('./utils')
 var ECLevel = require('./error-correction-level')
-var BitBuffer = require('./bit-buffer')
-var BitMatrix = require('./bit-matrix')
+// var BitBuffer = require('./bit-buffer')
+// var BitMatrix = require('./bit-matrix')
 var AlignmentPattern = require('./alignment-pattern')
-var FinderPattern = require('./finder-pattern')
+// var FinderPattern = require('./finder-pattern')
 var MaskPattern = require('./mask-pattern')
 var ECCode = require('./error-correction-code')
-var ReedSolomonEncoder = require('./reed-solomon-encoder')
+// var ReedSolomonEncoder = require('./reed-solomon-encoder')
 var Version = require('./version')
-var FormatInfo = require('./format-info')
+// var FormatInfo = require('./format-info')
 var Mode = require('./mode')
 var Segments = require('./segments')
-var isArray = require('isarray')
+// var isArray = require('isarray')
+var Polynomial = require('./polynomial')
+
+// var Buffer = require('buffer').Buffer
+
+function ReedSolomonEncoder (degree) {
+  this.genPoly = undefined
+  this.degree = degree
+
+  if (this.degree) this.initialize(this.degree)
+}
+
+/**
+ * Initialize the encoder.
+ * The input param should correspond to the number of error correction codewords.
+ *
+ * @param  {Number} degree
+ */
+ReedSolomonEncoder.prototype.initialize = function initialize (degree) {
+  // create an irreducible generator polynomial
+  this.degree = degree
+  this.genPoly = Polynomial.generateECPolynomial(this.degree)
+}
+
+/**
+ * Encodes a chunk of data
+ *
+ * @param  {Buffer} data Buffer containing input data
+ * @return {Buffer}      Buffer containing encoded data
+ */
+ReedSolomonEncoder.prototype.encode = function encode (data) {
+  if (!this.genPoly) {
+    throw new Error('Encoder not initialized')
+  }
+
+  // Calculate EC for this data block
+  // extends data size to data+genPoly size
+  var pad = Buffer.alloc(this.degree)
+  var paddedData = Buffer.concat([data, pad], data.length + this.degree)
+
+  // The error correction codewords are the remainder after dividing the data codewords
+  // by a generator polynomial
+  var remainder = Polynomial.mod(paddedData, this.genPoly)
+
+  // return EC data blocks (last n byte, where n is the degree of genPoly)
+  // If coefficients number in remainder are less than genPoly degree,
+  // pad with 0s to the left to reach the needed number of coefficients
+  var start = this.degree - remainder.length
+  if (start > 0) {
+    var buff = Buffer.alloc(this.degree)
+    remainder.copy(buff, start)
+
+    return buff
+  }
+
+  return remainder
+}
+
+
+// var getSymbolSize = require('./utils').getSymbolSize
+var FINDER_PATTERN_SIZE = 7
+
+/**
+ * Returns an array containing the positions of each finder pattern.
+ * Each array's element represent the top-left point of the pattern as (x, y) coordinates
+ *
+ * @param  {Number} version QR Code version
+ * @return {Array}          Array of coordinates
+ */
+function getPositions (version) {
+  var size = Utils.getSymbolSize(version)
+
+  return [
+    // top-left
+    [0, 0],
+    // top-right
+    [size - FINDER_PATTERN_SIZE, 0],
+    // bottom-left
+    [0, size - FINDER_PATTERN_SIZE]
+  ]
+}
+
+
+var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0)
+var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1)
+var G15_BCH = Utils.getBCHDigit(G15)
+
+/**
+ * Returns format information with relative error correction bits
+ *
+ * The format information is a 15-bit sequence containing 5 data bits,
+ * with 10 error correction bits calculated using the (15, 5) BCH code.
+ *
+ * @param  {Number} errorCorrectionLevel Error correction level
+ * @param  {Number} mask                 Mask pattern
+ * @return {Number}                      Encoded format information bits
+ */
+function getEncodedBits (errorCorrectionLevel, mask) {
+  var data = ((errorCorrectionLevel.bit << 3) | mask)
+  var d = data << 10
+
+  while (Utils.getBCHDigit(d) - G15_BCH >= 0) {
+    d ^= (G15 << (Utils.getBCHDigit(d) - G15_BCH))
+  }
+
+  // xor final data with mask pattern in order to ensure that
+  // no combination of Error Correction Level and data mask pattern
+  // will result in an all-zero data string
+  return ((data << 10) | d) ^ G15_MASK
+}
+
+
+function BitBuffer () {
+  this.buffer = []
+  this.length = 0
+}
+
+BitBuffer.prototype = {
+
+  get: function (index) {
+    var bufIndex = Math.floor(index / 8)
+    return ((this.buffer[bufIndex] >>> (7 - index % 8)) & 1) === 1
+  },
+
+  put: function (num, length) {
+    for (var i = 0; i < length; i++) {
+      this.putBit(((num >>> (length - i - 1)) & 1) === 1)
+    }
+  },
+
+  getLengthInBits: function () {
+    return this.length
+  },
+
+  putBit: function (bit) {
+    var bufIndex = Math.floor(this.length / 8)
+    if (this.buffer.length <= bufIndex) {
+      this.buffer.push(0)
+    }
+
+    if (bit) {
+      this.buffer[bufIndex] |= (0x80 >>> (this.length % 8))
+    }
+
+    this.length++
+  }
+}
+
+
+function BitMatrix (size) {
+  if (!size || size < 1) {
+    throw new Error('BitMatrix size must be defined and greater than 0')
+  }
+
+  this.size = size
+  this.data = Buffer.alloc(size * size)
+  this.reservedBit = Buffer.alloc(size * size)
+}
+
+/**
+ * Set bit value at specified location
+ * If reserved flag is set, this bit will be ignored during masking process
+ *
+ * @param {Number}  row
+ * @param {Number}  col
+ * @param {Boolean} value
+ * @param {Boolean} reserved
+ */
+BitMatrix.prototype.set = function (row, col, value, reserved) {
+  var index = row * this.size + col
+  this.data[index] = value
+  if (reserved) this.reservedBit[index] = true
+}
+
+/**
+ * Returns bit value at specified location
+ *
+ * @param  {Number}  row
+ * @param  {Number}  col
+ * @return {Boolean}
+ */
+BitMatrix.prototype.get = function (row, col) {
+  return this.data[row * this.size + col]
+}
+
+/**
+ * Applies xor operator at specified location
+ * (used during masking process)
+ *
+ * @param {Number}  row
+ * @param {Number}  col
+ * @param {Boolean} value
+ */
+BitMatrix.prototype.xor = function (row, col, value) {
+  this.data[row * this.size + col] ^= value
+}
+
+/**
+ * Check if bit at specified location is reserved
+ *
+ * @param {Number}   row
+ * @param {Number}   col
+ * @return {Boolean}
+ */
+BitMatrix.prototype.isReserved = function (row, col) {
+  return this.reservedBit[row * this.size + col]
+}
+
 
 function setupFinderPattern(matrix, version) {
   var size = matrix.size
-  var pos = FinderPattern.getPositions(version)
+  var pos = getPositions(version)
+  // var pos = FinderPattern.getPositions(version)
 
   for (var i = 0; i < pos.length; i++) {
     var row = pos[i][0]
@@ -120,7 +328,8 @@ function setupVersionInfo(matrix, version) {
  */
 function setupFormatInfo(matrix, errorCorrectionLevel, maskPattern) {
   var size = matrix.size
-  var bits = FormatInfo.getEncodedBits(errorCorrectionLevel, maskPattern)
+  var bits = getEncodedBits(errorCorrectionLevel, maskPattern)
+  // var bits = FormatInfo.getEncodedBits(errorCorrectionLevel, maskPattern)
   var i, mod
 
   for (i = 0; i < 15; i++) {
@@ -302,7 +511,7 @@ function createCodewords(bitBuffer, version, errorCorrectionLevel) {
   var dcData = new Array(ecTotalBlocks)
   var ecData = new Array(ecTotalBlocks)
   var maxDataSize = 0
-  var buffer = BufferUtil.from(bitBuffer.buffer)
+  var buffer = Buffer.from(bitBuffer.buffer)
 
   // Divide the buffer into the required number of blocks
   for (var b = 0; b < ecTotalBlocks; b++) {
@@ -320,7 +529,7 @@ function createCodewords(bitBuffer, version, errorCorrectionLevel) {
 
   // Create final data
   // Interleave the data and error correction codewords from each block
-  var data = BufferUtil.alloc(totalCodewords)
+  var data = Buffer.alloc(totalCodewords)
   var index = 0
   var i, r
 
@@ -355,7 +564,7 @@ function createCodewords(bitBuffer, version, errorCorrectionLevel) {
 function createSymbol(data, version, errorCorrectionLevel, maskPattern) {
   var segments
 
-  if (isArray(data)) {
+  if (Utils.isArray(data)) {
     segments = Segments.fromArray(data)
   } else if (typeof data === 'string') {
     var estimatedVersion = version

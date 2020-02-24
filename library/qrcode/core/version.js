@@ -2,8 +2,8 @@ var Utils = require('./utils')
 var ECCode = require('./error-correction-code')
 var ECLevel = require('./error-correction-level')
 var Mode = require('./mode')
-var VersionCheck = require('./version-check')
-var isArray = require('isarray')
+// var VersionCheck = require('./version-check')
+// var isArray = require('isarray')
 
 // Generator polynomial used to encode version information
 var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0)
@@ -55,7 +55,7 @@ function getBestVersionForMixedData (segments, errorCorrectionLevel) {
  * @return {Number}                     QR Code version number
  */
 exports.from = function from (value, defaultValue) {
-  if (VersionCheck.isValid(value)) {
+  if (Utils.VersionIsValid(value)) {
     return parseInt(value, 10)
   }
 
@@ -72,7 +72,7 @@ exports.from = function from (value, defaultValue) {
  * @return {Number}                      Quantity of storable data
  */
 exports.getCapacity = function getCapacity (version, errorCorrectionLevel, mode) {
-  if (!VersionCheck.isValid(version)) {
+  if (!Utils.VersionIsValid(version)) {
     throw new Error('Invalid QR Code version')
   }
 
@@ -122,7 +122,7 @@ exports.getBestVersionForData = function getBestVersionForData (data, errorCorre
 
   var ecl = ECLevel.from(errorCorrectionLevel, ECLevel.M)
 
-  if (isArray(data)) {
+  if (Utils.isArray(data)) {
     if (data.length > 1) {
       return getBestVersionForMixedData(data, ecl)
     }
@@ -150,7 +150,7 @@ exports.getBestVersionForData = function getBestVersionForData (data, errorCorre
  * @return {Number}         Encoded version info bits
  */
 exports.getEncodedBits = function getEncodedBits (version) {
-  if (!VersionCheck.isValid(version) || version < 7) {
+  if (!Utils.VersionIsValid(version) || version < 7) {
     throw new Error('Invalid QR Code version')
   }
 

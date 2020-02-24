@@ -1,4 +1,5 @@
-var VersionCheck = require('./version-check')
+var Utils = require('./utils')
+// var VersionCheck = require('./version-check')
 var Regex = require('./regex')
 
 /**
@@ -76,7 +77,7 @@ exports.MIXED = {
 exports.getCharCountIndicator = function getCharCountIndicator (mode, version) {
   if (!mode.ccBits) throw new Error('Invalid mode: ' + mode)
 
-  if (!VersionCheck.isValid(version)) {
+  if (!Utils.VersionIsValid(version)) {
     throw new Error('Invalid version: ' + version)
   }
 

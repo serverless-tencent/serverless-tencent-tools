@@ -61,3 +61,13 @@ exports.isKanjiModeEnabled = function () {
 exports.toSJIS = function toSJIS (kanji) {
   return toSJISFunction(kanji)
 }
+
+
+var toString = {}.toString;
+exports.isArray = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+exports.VersionIsValid = function (version) {
+  return !isNaN(version) && version >= 1 && version <= 40
+}

@@ -1,4 +1,4 @@
-var BufferUtil = require('../utils/buffer')
+// var BufferUtil = require('../utils/buffer')
 var GF = require('./galois-field')
 
 /**
@@ -9,7 +9,7 @@ var GF = require('./galois-field')
  * @return {Buffer}    Product of p1 and p2
  */
 exports.mul = function mul (p1, p2) {
-  var coeff = BufferUtil.alloc(p1.length + p2.length - 1)
+  var coeff = Buffer.alloc(p1.length + p2.length - 1)
 
   for (var i = 0; i < p1.length; i++) {
     for (var j = 0; j < p2.length; j++) {
@@ -28,7 +28,7 @@ exports.mul = function mul (p1, p2) {
  * @return {Buffer}          Remainder
  */
 exports.mod = function mod (divident, divisor) {
-  var result = BufferUtil.from(divident)
+  var result = Buffer.from(divident)
 
   while ((result.length - divisor.length) >= 0) {
     var coeff = result[0]
@@ -54,7 +54,7 @@ exports.mod = function mod (divident, divisor) {
  * @return {Buffer}        Buffer containing polynomial coefficients
  */
 exports.generateECPolynomial = function generateECPolynomial (degree) {
-  var poly = BufferUtil.from([1])
+  var poly = Buffer.from([1])
   for (var i = 0; i < degree; i++) {
     poly = exports.mul(poly, [1, GF.exp(i)])
   }
