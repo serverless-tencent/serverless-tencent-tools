@@ -18,7 +18,11 @@
   "author": "Dfounderliu",
   "license": "Apache",
   "dependencies": {
-    "qrcode": "^1.4.4"
+    "buffer": "^5.4.3",
+    "buffer-alloc": "^1.2.0",
+    "buffer-from": "^1.1.1",
+    "dijkstrajs": "^1.0.1",
+    "isarray": "^2.0.1"
   },
   "devDependencies": {
     "babel-eslint": "9.0.0",
