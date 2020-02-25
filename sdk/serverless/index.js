@@ -6,10 +6,9 @@ const HttpProfile = common.HttpProfile
 const Credential = common.Credential
 const SlsClient = sls.v20200205.Client
 const SlsModels = sls.v20200205.Models
+const HttpConnection = common.HttpConnection
 const { BindRole } = require('../cam')
-// const ClientProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/client_profile.js');
-// const HttpProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/http_profile.js');
-// const { Credential } = Tencentcloud.common;
+const TencentCloudSDKHttpException = require('../../library/common/exception/tencent_cloud_sdk_exception')
 
 class Serverless {
   constructor({ appid, secret_id, secret_key, options }) {
@@ -43,13 +42,48 @@ class Serverless {
     return scfCli
   }
 
-  async getComponentAndVersions(name) {
+  static async getComponentAndVersions(name) {
+    const proxyOrigin = 'https://service-m98cluso-1253970226.gz.apigw.tencentcs.com/release/listcompversion'
     const compVersion = {
       ComponentName: name
     }
-    const req = new SlsModels.GetComponentAndVersionsRequest()
-    req.from_json_string(JSON.stringify(compVersion))
-    return await this._call('GetComponentAndVersions', req)
+    // const req = new SlsModels.GetComponentAndVersionsRequest()
+    // req.from_json_string(JSON.stringify(compVersion))
+    // return await this._call('GetComponentAndVersions', req)
+
+    const optional = {
+      timeout: 30 * 1000
+    }
+    
+    return new Promise((resolve, reject) => {
+      HttpConnection.doRequest(
+        'GET',
+        proxyOrigin,
+        compVersion,
+        (error, response, data) => {
+          if (error) {
+            reject(new TencentCloudSDKHttpException(error.message))
+          } else if (response.statusCode !== 200) {
+            const tcError = new TencentCloudSDKHttpException(response.statusMessage)
+            tcError.httpCode = response.statusCode
+            reject(tcError)
+          } else {
+            data = JSON.parse(data)
+            if (data.Response && data.Response.Error) {
+              const tcError = new TencentCloudSDKHttpException(
+                data.Response.Error.Message,
+                data.Response.RequestId
+              )
+              tcError.code = data.Response.Error.Code
+              reject(tcError)
+            } else {
+              resolve(data.Response)
+            }
+          }
+        },
+        optional
+        )
+    })
   }
 
   async _call(api, params) {

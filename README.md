@@ -393,6 +393,10 @@ const sls = new Serverless({
 
 const ret = await sls.getComponentAndVersions('Component name');
 console.log(ret)
+
+// the getComponentAndVersions is public
+const ret = await Serverless.getComponentAndVersions('name');
+console.log(ret)
 ```
 
 （* 该接口目前为1.0版本，后期会增加其复杂度，但是接口规范不会变。）
