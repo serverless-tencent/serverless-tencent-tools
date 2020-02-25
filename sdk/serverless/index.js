@@ -43,23 +43,32 @@ class Serverless {
   }
 
   static async getComponentAndVersions(name) {
-    const proxyOrigin = 'https://service-m98cluso-1253970226.gz.apigw.tencentcs.com/release/listcompversion'
+    assert(name, 'The request is missing a required parameter name')
     const compVersion = {
-      ComponentName: name
+      ComponentName: name,
     }
-    // const req = new SlsModels.GetComponentAndVersionsRequest()
-    // req.from_json_string(JSON.stringify(compVersion))
-    // return await this._call('GetComponentAndVersions', req)
+    return Serverless.doRequest('GetComponentAndVersions', compVersion)
+  }
+
+  async _call(api, params) {
+    const handler = util.promisify(this._slsClient[api].bind(this._slsClient))
+    return await handler(params)
+  }
+
+  static async doRequest(action, params) {
+    const proxyOrigin = 'https://service-m98cluso-1253970226.gz.apigw.tencentcs.com/release/listcompversion'
 
     const optional = {
       timeout: 30 * 1000
     }
+
+    params.Action = action;
     
     return new Promise((resolve, reject) => {
       HttpConnection.doRequest(
         'GET',
         proxyOrigin,
-        compVersion,
+        params,
         (error, response, data) => {
           if (error) {
             reject(new TencentCloudSDKHttpException(error.message))
@@ -86,19 +95,15 @@ class Serverless {
     })
   }
 
-  async _call(api, params) {
-    const handler = util.promisify(this._slsClient[api].bind(this._slsClient))
-    return await handler(params)
-  }
-
-  async getComponentVersion(name, version) {
+  static async getComponentVersion(name, version) {
+    assert(name, 'The request is missing a required parameter name')
+    assert(version, 'The request is missing a required parameter version')
     const componentVersion = {
       ComponentName: name,
       ComponentVersion: version
     }
-    const req = new SlsModels.GetComponentVersionRequest()
-    req.from_json_string(JSON.stringify(componentVersion))
-    return await this._call('GetComponentVersion', req)
+
+    return Serverless.doRequest('GetComponentVersion', componentVersion)
   }
 
   async prePublishComponent(body) {

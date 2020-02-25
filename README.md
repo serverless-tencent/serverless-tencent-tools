@@ -391,11 +391,13 @@ const sls = new Serverless({
   }
 });
 
-const ret = await sls.getComponentAndVersions('Component name');
+let ret = await sls.getComponentAndVersions('Component name');
 console.log(ret)
 
-// the getComponentAndVersions is public
-const ret = await Serverless.getComponentAndVersions('name');
+// the getComponentAndVersions/getComponentVersion is public
+ret = await Serverless.getComponentAndVersions('name');
+console.log(ret)
+ret = await Serverless.getComponentVersion('name', 'version');
 console.log(ret)
 ```
 
