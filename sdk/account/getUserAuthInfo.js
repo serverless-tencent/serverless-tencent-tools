@@ -1,10 +1,9 @@
-const request = require('request')
+const http = require('http')
 const os = require('os')
 
 class GetUserAuthInfo {
   async isAuth(ownerUin, inputs = {}) {
-    var url = 'http://service-ocnymoks-1258344699.gz.apigw.tencentcs.com/release/getUserAuthInfo'
-    var requestData = {
+    const data = {
       uin: ownerUin,
       os_platform: os.platform(),
       os_release: os.release(),
@@ -14,25 +13,34 @@ class GetUserAuthInfo {
       pid: process.pid,
       project: inputs.project
     }
+    const requestData = JSON.stringify(data)
 
-    return new Promise(function(resolve, rejecte) {
-      request(
-        {
-          url: url,
-          method: 'POST',
-          json: true,
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: requestData
-        },
-        function(error, response, body) {
-          if (!error && response.statusCode == 200) {
-            resolve(body)
-          }
-          rejecte('Get user auth info error')
-        }
-      )
+    const options = {
+      host: 'service-ocnymoks-1258344699.gz.apigw.tencentcs.com',
+      port: '80',
+      path: '/release/getUserAuthInfo',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+
+    return new Promise(function(resolve, reject) {
+      const req = http.request(options, function(res) {
+        res.setEncoding('utf8')
+        res.on('data', function(chunk) {
+          resolve(chunk)
+        })
+      })
+
+      req.on('error', function(e) {
+        reject(e.message)
+      })
+
+      // write data to request body
+      req.write(requestData)
+
+      req.end()
     })
   }
 }

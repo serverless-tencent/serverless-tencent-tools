@@ -386,7 +386,8 @@ const sls = new Serverless({
   secret_id: secret_id,
   secret_key: secret_key,
   options: {
-    region: 'ap-guangzhou'
+    region: 'ap-guangzhou',
+    token: 'xxxxxx'
   }
 });
 

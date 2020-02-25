@@ -1,11 +1,11 @@
 const util = require('util')
-const request = require('request')
+const http = require('http')
 const os = require('os')
-const uuidv4 = require('uuid/v4')
-const QRCode = require('qrcode')
-const apiBaseUrl = 'http://scfdev.tencentserverless.com'
-const apiShortUrl = apiBaseUrl + '/login/url'
-const refreshTokenUrl = apiBaseUrl + '/login/info'
+const uuidv4 = require('../../library/uuid')
+const QRCode = require('../../library/qrcode/index')
+const apiBaseUrl = 'scfdev.tencentserverless.com'
+const apiShortUrl = '/login/url'
+const refreshTokenUrl = '/login/info'
 
 class Login {
   sleep(ms) {
@@ -15,70 +15,88 @@ class Login {
   }
 
   async getShortUrl(uuid) {
-    return new Promise((done) => {
-      const shortUrl = util.format('%s?os=%s&uuid=%s', apiShortUrl, os.type(), uuid)
-      request(shortUrl, (error, response, body) => {
-        if (error) {
-          done(false)
-          return
-        }
-
-        if (response.statusCode != 200) {
-          done(false)
-          return
-        }
-        try {
-          done(JSON.parse(body))
-        } catch (e) {
-          done(false)
-          return
-        }
+    const options = {
+      host: apiBaseUrl,
+      port: '80',
+      path: util.format('%s?os=%s&uuid=%s', apiShortUrl, os.type(), uuid)
+    }
+    return new Promise(function(resolve, reject) {
+      const req = http.get(options, function(res) {
+        res.setEncoding('utf8')
+        res.on('data', function(chunk) {
+          try {
+            resolve(JSON.parse(chunk))
+          } catch (e) {
+            reject(e.message)
+          }
+        })
       })
+      req.on('error', function(e) {
+        reject(e.message)
+      })
+      req.end()
     })
   }
 
   async checkStatus(uuid, url) {
     return new Promise((done) => {
-      const tokenUrl = util.format('%s%s', apiBaseUrl, url)
-      request(tokenUrl, (error, response, body) => {
-        if (error) {
-          done(false)
-          return
-        }
-
-        if (response.statusCode != 200) {
-          done(false)
-          return
-        }
-        try {
-          done(JSON.parse(body))
-        } catch (e) {
-          done(false)
-          return
-        }
+      const options = {
+        host: apiBaseUrl,
+        port: '80',
+        path: url
+      }
+      const req = http.get(options, function(res) {
+        res.setEncoding('utf8')
+        res.on('data', function(chunk) {
+          try {
+            const responseData = JSON.parse(chunk)
+            if (responseData['success']) {
+              done(responseData)
+            } else {
+              done(false)
+            }
+          } catch (e) {
+            done(false)
+            return
+          }
+        })
       })
+      req.on('error', function(e) {
+        done(false)
+        return
+      })
+      req.end()
     })
   }
 
   async flush(uuid, expired, signature, appid) {
     return await new Promise((done) => {
-      const flushUrl = `${refreshTokenUrl}?uuid=${uuid}&os=${os.type()}&expired=${expired}&signature=${signature}&appid=${appid}`
-      request(flushUrl, (error, response, body) => {
-        if (error) {
-          done(false)
-          return
-        }
-        if (response.statusCode != 200) {
-          done(false)
-          return
-        }
-        try {
-          done(JSON.parse(body))
-        } catch (e) {
-          done(false)
-          return
-        }
+      const options = {
+        host: apiBaseUrl,
+        port: '80',
+        path: `${refreshTokenUrl}?uuid=${uuid}&os=${os.type()}&expired=${expired}&signature=${signature}&appid=${appid}`
+      }
+      const req = http.get(options, function(res) {
+        res.setEncoding('utf8')
+        res.on('data', function(chunk) {
+          try {
+            const responseData = JSON.parse(chunk)
+            if (responseData['success']) {
+              done(responseData)
+            } else {
+              done(false)
+            }
+          } catch (e) {
+            done(false)
+            return
+          }
+        })
       })
+      req.on('error', function(e) {
+        done(false)
+        return
+      })
+      req.end()
     })
   }
 
@@ -124,7 +142,7 @@ class Login {
       console.log('Login successful for TencentCloud. ')
       return configure
     } catch (e) {
-      console.log(e.message)
+      console.log(e)
     }
     process.exit(0)
   }
@@ -140,7 +158,7 @@ class Login {
         short_url: apiUrl.short_url
       }
     } catch (e) {
-      console.log(e.message)
+      console.log(e)
     }
   }
 }

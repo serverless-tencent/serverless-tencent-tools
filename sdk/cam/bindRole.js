@@ -1,10 +1,10 @@
 const util = require('util')
-const tencentcloud = require('tencentcloud-sdk-nodejs')
-const camCredential = tencentcloud.common.Credential
-const camClient = tencentcloud.cam.v20190116.Client
-const camModels = tencentcloud.cam.v20190116.Models
-const clientProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/client_profile.js')
-const HttpProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/http_profile.js')
+const { cam, common } = require('../../library')
+const clientProfile = common.ClientProfile
+const HttpProfile = common.HttpProfile
+const camCredential = common.Credential
+const camClient = cam.v20190116.Client
+const camModels = cam.v20190116.Models
 
 class BindRole {
   constructor(credentials = {}) {
