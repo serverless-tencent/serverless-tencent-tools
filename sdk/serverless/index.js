@@ -98,10 +98,10 @@ class Serverless {
 
   static async getComponentVersion(name, version) {
     assert(name, 'The request is missing a required parameter name')
-    assert(version, 'The request is missing a required parameter version')
+    // assert(version, 'The request is missing a required parameter version')
     const componentVersion = {
       ComponentName: name,
-      ComponentVersion: version
+      ComponentVersion: version || ''
     }
 
     return Serverless.doRequest('GetComponentVersion', componentVersion)
