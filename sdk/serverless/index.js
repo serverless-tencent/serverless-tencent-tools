@@ -136,57 +136,86 @@ class Serverless {
     return await this._call('PostPublishComponent', req)
   }
 
-  async getInstance(body) {
-    const ins = {
-      Body: body
-    }
+  async getInstance({orgName, orgUid, appName, stageName, instanceName}) {
+    assert(appName, 'The request is missing a required parameter appName')
+    assert(stageName, 'The request is missing a required parameter stageName')
+    assert(instanceName, 'The request is missing a required parameter instanceName')
+
     const req = new SlsModels.GetInstanceRequest()
-    req.from_json_string(JSON.stringify(ins))
-    return await this._call('GetInstance', req)
+    req.AppName = appName;
+    req.StageName = stageName;
+    req.InstanceName = instanceName;
+    req.Body = JSON.stringify(arguments[0])
+    return this._call('GetInstance', req)
   }
 
-  async saveInstance(body) {
-    const ins = {
-      Body: body
-    }
+  async saveInstance({instance}) {
+    assert(instance, 'The request is missing a required parameter instance')
+    assert(instance.appName, 'The request is missing a required parameter instance.appName')
+    assert(instance.stageName, 'The request is missing a required parameter instance.stageName')
+    assert(instance.instanceName, 'The request is missing a required parameter instance.instanceName')
+ 
     const req = new SlsModels.SaveInstanceRequest()
-    req.from_json_string(JSON.stringify(ins))
-    return await this._call('SaveInstance', req)
+    req.AppName = instance.appName;
+    req.StageName = instance.stageName;
+    req.InstanceName = instance.instanceName;
+    req.Body = JSON.stringify(arguments[0])
+    return this._call('SaveInstance', req)
   }
 
-  async listInstances(body) {
-    const ins = {
-      Body: body
-    }
+  async listInstances({orgName, orgUid, appName, stageName}) {
+    assert(appName, 'The request is missing a required parameter appName')
+    assert(stageName, 'The request is missing a required parameter stageName')
+    
     const req = new SlsModels.ListInstancesRequest()
-    req.from_json_string(JSON.stringify(ins))
-    return await this._call('ListInstances', req)
+    req.AppName = appName;
+    req.StageName = stageName;
+    req.Body = JSON.stringify(arguments[0])
+    return this._call('ListInstances', req)
   }
 
-  async getUploadUrls(body) {
-    const uploadUrl = {
-      Body: body
-    }
+  async getUploadUrls({orgName, orgUid}) {
+    assert(orgName, 'The request is missing a required parameter orgName')
+    assert(orgUid, 'The request is missing a required parameter orgUid')
+    
     const req = new SlsModels.GetUploadUrlsRequest()
-    req.from_json_string(JSON.stringify(uploadUrl))
-    return await this._call('GetUploadUrls', req)
+    req.Body = JSON.stringify(arguments[0])
+    return this._call('GetUploadUrls', req)
   }
 
-  async runComponent(body) {
-    const comp = {
-      Body: body
-    }
+  async runComponent({instance, method, credentials, options, size}) {
+    assert(instance, 'The request is missing a required parameter instance')
+    assert(method, 'The request is missing a required parameter method')
+    assert(instance.appName, 'The request is missing a required parameter instance.appName')
+    assert(instance.stageName, 'The request is missing a required parameter instance.stageName')
+    assert(instance.instanceName, 'The request is missing a required parameter instance.instanceName')
+
+    // const regexp = new RegExp(/^(deploy|remove|run)$/, 'g');
+    // assert(regexp.exec(method), 'The request is missing a required parameter method value "deploy|remove|run"')
+
     const req = new SlsModels.RunComponentRequest()
-    req.from_json_string(JSON.stringify(comp))
-    return await this._call('RunComponent', req)
+    req.AppName = instance.appName
+    req.StageName = instance.stageName
+    req.InstanceName = instance.instanceName
+    req.Body = JSON.stringify(arguments[0])
+    return this._call('RunComponent', req)
   }
 
-  async runFinishComponent(body) {
-    const comp = {
-      Body: body
-    }
+  async runFinishComponent({instance, method}) {
+    assert(instance, 'The request is missing a required parameter instance')
+    assert(method, 'The request is missing a required parameter method')
+    assert(instance.appName, 'The request is missing a required parameter instance.appName')
+    assert(instance.stageName, 'The request is missing a required parameter instance.stageName')
+    assert(instance.instanceName, 'The request is missing a required parameter instance.instanceName')
+
+    // const regexp = new RegExp(/^(deploy|remove|run)$/, 'g');
+    // assert(regexp.exec(method), 'The request is missing a required parameter method value "deploy|remove|run"')
+
     const req = new SlsModels.RunFinishComponentRequest()
-    req.from_json_string(JSON.stringify(comp))
+    req.AppName = instance.appName;
+    req.StageName = instance.stageName;
+    req.InstanceName = instance.instanceName;
+    req.Body = JSON.stringify(arguments[0])
     return await this._call('RunFinishComponent', req)
   }
 
