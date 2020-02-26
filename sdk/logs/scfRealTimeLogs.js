@@ -1,11 +1,8 @@
-const tencentcloud = require('tencentcloud-sdk-nodejs')
-const ScfModels = tencentcloud.scf.v20180416.Models
-const ScfClient = tencentcloud.scf.v20180416.Client
-const { Credential } = tencentcloud.common
-const ClientProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/client_profile.js')
-const HttpProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/http_profile.js')
-const urlencode = require('urlencode')
 const { GetUserInformationResponse, UserInformationClient } = require('../cam/index')
+const { scf, common } = require('../../library')
+const ScfModels = scf.v20180416.Models
+const ScfClient = scf.v20180416.Client
+const { Credential, ClientProfile, HttpProfile } = common
 
 class ScfRealTimeLogs {
   static createScfClient(secret_id, secret_key, token, region) {
@@ -33,8 +30,8 @@ class ScfRealTimeLogs {
     const secret_id = auth.SecretId
     const secret_key = auth.SecretKey
     const cred = auth.token
-      ? new tencentcloud.common.Credential(secret_id, secret_key, auth.token)
-      : new tencentcloud.common.Credential(secret_id, secret_key)
+      ? new Credential(secret_id, secret_key, auth.token)
+      : new Credential(secret_id, secret_key)
     const httpProfile = new HttpProfile()
     httpProfile.reqTimeout = 30
     const clientProfile = new ClientProfile('HmacSHA256', httpProfile)
@@ -47,7 +44,7 @@ class ScfRealTimeLogs {
     const keys = Object.keys(params)
     keys.sort()
     for (const k in keys) {
-      const tempStr = keys[k] == 'Signature' ? urlencode(params[keys[k]]) : params[keys[k]]
+      const tempStr = keys[k] == 'Signature' ? encodeURIComponent(params[keys[k]]) : params[keys[k]]
       strParam += '&' + keys[k] + '=' + tempStr
     }
     return strParam
@@ -68,7 +65,7 @@ class ScfRealTimeLogs {
     const keys = Object.keys(params)
     keys.sort()
     for (const k in keys) {
-      const tempStr = keys[k] == 'Signature' ? urlencode(params[keys[k]]) : params[keys[k]]
+      const tempStr = keys[k] == 'Signature' ? encodeURIComponent(params[keys[k]]) : params[keys[k]]
       strParam += '&' + keys[k] + '=' + tempStr
     }
 
@@ -79,7 +76,7 @@ class ScfRealTimeLogs {
       '&Timeout=' +
       timeout +
       '&AppidSignature=' +
-      urlencode(this.getAppid(auth))
+      encodeURIComponent(this.getAppid(auth))
     )
   }
 }

@@ -1,9 +1,10 @@
 const util = require('util')
-const AbstractModel = require('tencentcloud-sdk-nodejs/tencentcloud/common/abstract_model')
-const AbstractClient = require('tencentcloud-sdk-nodejs/tencentcloud/common/abstract_client')
-const tencentcloud = require('tencentcloud-sdk-nodejs')
-const ClientProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/client_profile.js')
-const HttpProfile = require('tencentcloud-sdk-nodejs/tencentcloud/common/profile/http_profile.js')
+
+const { common } = require('../../library')
+const AbstractModel = require('../../library/common/abstract_model')
+const AbstractClient = require('../../library/common/abstract_client')
+const CamCredential = common.Credential
+const { ClientProfile, HttpProfile } = common
 
 class GetUserInformationResponse extends AbstractModel {
   constructor() {
@@ -39,8 +40,8 @@ class GetUserInformation {
     const secret_id = credentials.SecretId
     const secret_key = credentials.SecretKey
     const cred = credentials.token
-      ? new tencentcloud.common.Credential(secret_id, secret_key, credentials.token)
-      : new tencentcloud.common.Credential(secret_id, secret_key)
+      ? new CamCredential(secret_id, secret_key, credentials.token)
+      : new CamCredential(secret_id, secret_key)
     const httpProfile = new HttpProfile()
     httpProfile.reqTimeout = 30
     const clientProfile = new ClientProfile('HmacSHA256', httpProfile)

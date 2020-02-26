@@ -100,6 +100,24 @@ class RunFinishComponentRequest extends  AbstractModel {
          */
         this.Body = null;
 
+        /**
+         * App Name
+         * @type {string || null}
+         */
+        this.AppName = null;
+
+        /**
+         * Stage Name
+         * @type {string || null}
+         */
+        this.StageName = null;
+
+        /**
+         * Instance Name
+         * @type {string || null}
+         */
+        this.InstanceName = null;
+
     }
 
     /**
@@ -110,6 +128,9 @@ class RunFinishComponentRequest extends  AbstractModel {
             return;
         }
         this.Body = 'Body' in params ? params.Body : null;
+        this.AppName = 'AppName' in params ? params.AppName : null;
+        this.StageName = 'StageName' in params ? params.StageName : null;
+        this.InstanceName = 'InstanceName' in params ? params.InstanceName : null;
 
     }
 }
@@ -261,6 +282,24 @@ class GetInstanceRequest extends  AbstractModel {
          */
         this.Body = null;
 
+        /**
+         * App Name
+         * @type {string || null}
+         */
+        this.AppName = null;
+
+        /**
+         * Stage Name
+         * @type {string || null}
+         */
+        this.StageName = null;
+
+        /**
+         * Instance Name
+         * @type {string || null}
+         */
+        this.InstanceName = null;
+
     }
 
     /**
@@ -271,6 +310,9 @@ class GetInstanceRequest extends  AbstractModel {
             return;
         }
         this.Body = 'Body' in params ? params.Body : null;
+        this.AppName = 'AppName' in params ? params.AppName : null;
+        this.StageName = 'StageName' in params ? params.StageName : null;
+        this.InstanceName = 'InstanceName' in params ? params.InstanceName : null;
 
     }
 }
@@ -359,6 +401,18 @@ class PrePublishComponentRequest extends  AbstractModel {
          */
         this.Body = null;
 
+        /**
+         * Component Name
+         * @type {string || null}
+         */
+        this.ComponentName = null;
+
+        /**
+         * Component Version
+         * @type {string || null}
+         */
+        this.ComponentVersion = null;
+
     }
 
     /**
@@ -369,6 +423,8 @@ class PrePublishComponentRequest extends  AbstractModel {
             return;
         }
         this.Body = 'Body' in params ? params.Body : null;
+        this.ComponentName = 'ComponentName' in params ? params.ComponentName : null;
+        this.ComponentVersion = 'ComponentVersion' in params ? params.ComponentVersion : null;
 
     }
 }
@@ -485,6 +541,24 @@ class RunComponentRequest extends  AbstractModel {
          */
         this.Body = null;
 
+        /**
+         * App Name
+         * @type {string || null}
+         */
+        this.AppName = null;
+
+        /**
+         * Stage Name
+         * @type {string || null}
+         */
+        this.StageName = null;
+
+        /**
+         * Instance Name
+         * @type {string || null}
+         */
+        this.InstanceName = null;
+
     }
 
     /**
@@ -495,6 +569,9 @@ class RunComponentRequest extends  AbstractModel {
             return;
         }
         this.Body = 'Body' in params ? params.Body : null;
+        this.AppName = 'AppName' in params ? params.AppName : null;
+        this.StageName = 'StageName' in params ? params.StageName : null;
+        this.InstanceName = 'InstanceName' in params ? params.InstanceName : null;
 
     }
 }
@@ -514,6 +591,24 @@ class RunFinishComponentResponse extends  AbstractModel {
         this.Body = null;
 
         /**
+         * App Name
+         * @type {string || null}
+         */
+        this.AppName = null;
+
+        /**
+         * Stage Name
+         * @type {string || null}
+         */
+        this.StageName = null;
+
+        /**
+         * Instance Name
+         * @type {string || null}
+         */
+        this.InstanceName = null;
+
+        /**
          * 唯一请求 ID，每次请求都会返回。定位问题时需要提供该次请求的 RequestId。
          * @type {string || null}
          */
@@ -529,6 +624,9 @@ class RunFinishComponentResponse extends  AbstractModel {
             return;
         }
         this.Body = 'Body' in params ? params.Body : null;
+        this.AppName = 'AppName' in params ? params.AppName : null;
+        this.StageName = 'StageName' in params ? params.StageName : null;
+        this.InstanceName = 'InstanceName' in params ? params.InstanceName : null;
         this.RequestId = 'RequestId' in params ? params.RequestId : null;
 
     }
@@ -583,6 +681,18 @@ class PostPublishComponentRequest extends  AbstractModel {
          */
         this.Body = null;
 
+        /**
+         * Component Name
+         * @type {string || null}
+         */
+        this.ComponentName = null;
+
+        /**
+         * Component Version
+         * @type {string || null}
+         */
+        this.ComponentVersion = null;
+
     }
 
     /**
@@ -593,6 +703,8 @@ class PostPublishComponentRequest extends  AbstractModel {
             return;
         }
         this.Body = 'Body' in params ? params.Body : null;
+        this.ComponentName = 'ComponentName' in params ? params.ComponentName : null;
+        this.ComponentVersion = 'ComponentVersion' in params ? params.ComponentVersion : null;
 
     }
 }
@@ -611,6 +723,24 @@ class SaveInstanceRequest extends  AbstractModel {
          */
         this.Body = null;
 
+        /**
+         * App Name
+         * @type {string || null}
+         */
+        this.AppName = null;
+
+        /**
+         * Stage  Name
+         * @type {string || null}
+         */
+        this.StageName = null;
+
+        /**
+         * Instance Name
+         * @type {string || null}
+         */
+        this.InstanceName = null;
+
     }
 
     /**
@@ -621,6 +751,9 @@ class SaveInstanceRequest extends  AbstractModel {
             return;
         }
         this.Body = 'Body' in params ? params.Body : null;
+        this.AppName = 'AppName' in params ? params.AppName : null;
+        this.StageName = 'StageName' in params ? params.StageName : null;
+        this.InstanceName = 'InstanceName' in params ? params.InstanceName : null;
 
     }
 }
@@ -639,6 +772,18 @@ class ListInstancesRequest extends  AbstractModel {
          */
         this.Body = null;
 
+        /**
+         * App Name
+         * @type {string || null}
+         */
+        this.AppName = null;
+
+        /**
+         * Stage Name
+         * @type {string || null}
+         */
+        this.StageName = null;
+
     }
 
     /**
@@ -649,6 +794,8 @@ class ListInstancesRequest extends  AbstractModel {
             return;
         }
         this.Body = 'Body' in params ? params.Body : null;
+        this.AppName = 'AppName' in params ? params.AppName : null;
+        this.StageName = 'StageName' in params ? params.StageName : null;
 
     }
 }
