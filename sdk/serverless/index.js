@@ -64,7 +64,7 @@ class Serverless {
 
     async getComponentVersion(name, version) {
         const componentVersion = {
-            ComponentName: name, 
+            ComponentName: name,
             ComponentVersion: version
         }
         const req = new SlsModels.GetComponentVersionRequest();
@@ -73,8 +73,13 @@ class Serverless {
     }
 
 
-    async prePublishComponent(body) {
+    async prePublishComponent(body = {}) {
+        if(!body.component || !body.component.componentName || !body.component.version){
+            throw new Error('componentName and version are required.')
+        }
         const pubComponent = {
+            ComponentName:body.component.componentName,
+            ComponentVersion: body.component.version,
             Body: body
         }
 
@@ -84,8 +89,13 @@ class Serverless {
     }
 
 
-    async postPublishComponent(body) {
+    async postPublishComponent(body = {}) {
+        if(!body.componentName || !body.componentVersion){
+            throw new Error('componentName and componentVersion are required.')
+        }
         const pubComponent = {
+            ComponentName:body.componentName,
+            ComponentVersion: body.componentVersion,
             Body: body
         }
         const req = new SlsModels.PostPublishComponentRequest();
@@ -156,19 +166,19 @@ class Serverless {
 
     // async unpublishComponentVersion(name, version) {
     //     const componentVersion = {
-    //         Name: name, 
+    //         Name: name,
     //         ComponentVersion: version
     //     }
     //     const req = new SlsModels.UnpublishComponentVersionRequest();
     //     req.from_json_string(JSON.stringify(componentVersion));
     //     return await this._call('UnpublishComponentVersion', req);
     // }
-    
+
 
     // async publishComponentVersion({name, componentVersion, org, author, description, keywords, license}) {
-        
+
     //     const camRole = new BindRole.BindRole({
-    //         SecretId: this.secret_id, 
+    //         SecretId: this.secret_id,
     //         SecretKey: this.secret_key,
     //         token: this.options.token
     //     });
@@ -193,7 +203,7 @@ class Serverless {
 
     // async fetchComponentMetadata(name, version) {
     //     const componentVersion = {
-    //         Name: name, 
+    //         Name: name,
     //         ComponentVersion: version
     //     }
     //     const req = new SlsModels.FetchComponentMetadataRequest();
