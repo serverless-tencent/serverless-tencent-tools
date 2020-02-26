@@ -45,7 +45,7 @@ class Serverless {
   static async getComponentAndVersions(name) {
     assert(name, 'The request is missing a required parameter name')
     const compVersion = {
-      ComponentName: name,
+      ComponentName: name
     }
     return Serverless.doRequest('GetComponentAndVersions', compVersion)
   }
@@ -56,13 +56,14 @@ class Serverless {
   }
 
   static async doRequest(action, params) {
-    const proxyOrigin = 'https://service-m98cluso-1253970226.gz.apigw.tencentcs.com/release/listcompversion'
+    const proxyOrigin =
+      'https://service-m98cluso-1253970226.gz.apigw.tencentcs.com/release/listcompversion'
 
     const optional = {
       timeout: 30 * 1000
     }
 
-    params.Action = action;
+    params.Action = action
 
     return new Promise((resolve, reject) => {
       HttpConnection.doRequest(
@@ -91,7 +92,7 @@ class Serverless {
           }
         },
         optional
-        )
+      )
     })
   }
 
@@ -106,36 +107,34 @@ class Serverless {
     return Serverless.doRequest('GetComponentVersion', componentVersion)
   }
 
-    async prePublishComponent(body = {}) {
-        if(!body.component || !body.component.componentName || !body.component.version){
-            throw new Error('componentName and version are required.')
-        }
-        const pubComponent = {
-            ComponentName:body.component.componentName,
-            ComponentVersion: body.component.version,
-            Body: body
-        }
-
-        const req = new SlsModels.PrePublishComponentRequest();
-        req.from_json_string(JSON.stringify(pubComponent));
-        return await this._call('PrePublishComponent', req);
+  async prePublishComponent(body = {}) {
+    if (!body.component || !body.component.componentName || !body.component.version) {
+      throw new Error('componentName and version are required.')
+    }
+    const pubComponent = {
+      ComponentName: body.component.componentName,
+      ComponentVersion: body.component.version,
+      Body: body
     }
 
+    const req = new SlsModels.PrePublishComponentRequest()
+    req.from_json_string(JSON.stringify(pubComponent))
+    return await this._call('PrePublishComponent', req)
+  }
 
-    async postPublishComponent(body = {}) {
-        if(!body.componentName || !body.componentVersion){
-            throw new Error('componentName and componentVersion are required.')
-        }
-        const pubComponent = {
-            ComponentName:body.componentName,
-            ComponentVersion: body.componentVersion,
-            Body: body
-        }
-        const req = new SlsModels.PostPublishComponentRequest();
-        req.from_json_string(JSON.stringify(pubComponent));
-        return await this._call('PostPublishComponent', req);
+  async postPublishComponent(body = {}) {
+    if (!body.componentName || !body.componentVersion) {
+      throw new Error('componentName and componentVersion are required.')
     }
-
+    const pubComponent = {
+      ComponentName: body.componentName,
+      ComponentVersion: body.componentVersion,
+      Body: body
+    }
+    const req = new SlsModels.PostPublishComponentRequest()
+    req.from_json_string(JSON.stringify(pubComponent))
+    return await this._call('PostPublishComponent', req)
+  }
 
   async getInstance(body) {
     const ins = {
@@ -191,52 +190,50 @@ class Serverless {
     return await this._call('RunFinishComponent', req)
   }
 
-    // async unpublishComponentVersion(name, version) {
-    //     const componentVersion = {
-    //         Name: name,
-    //         ComponentVersion: version
-    //     }
-    //     const req = new SlsModels.UnpublishComponentVersionRequest();
-    //     req.from_json_string(JSON.stringify(componentVersion));
-    //     return await this._call('UnpublishComponentVersion', req);
-    // }
+  // async unpublishComponentVersion(name, version) {
+  //     const componentVersion = {
+  //         Name: name,
+  //         ComponentVersion: version
+  //     }
+  //     const req = new SlsModels.UnpublishComponentVersionRequest();
+  //     req.from_json_string(JSON.stringify(componentVersion));
+  //     return await this._call('UnpublishComponentVersion', req);
+  // }
 
+  // async publishComponentVersion({name, componentVersion, org, author, description, keywords, license}) {
 
-    // async publishComponentVersion({name, componentVersion, org, author, description, keywords, license}) {
+  //     const camRole = new BindRole.BindRole({
+  //         SecretId: this.secret_id,
+  //         SecretKey: this.secret_key,
+  //         token: this.options.token
+  //     });
 
-    //     const camRole = new BindRole.BindRole({
-    //         SecretId: this.secret_id,
-    //         SecretKey: this.secret_key,
-    //         token: this.options.token
-    //     });
+  //     camRole.bindSLSQcsRole();
 
-    //     camRole.bindSLSQcsRole();
+  //     const pubComVersionRequest = {
+  //         Name: name,
+  //         ComponentVersion: componentVersion,
+  //         Org: org,
+  //         Author: author,
+  //         Description: description,
+  //         Keywords: keywords,
+  //         License: license
+  //     }
 
-    //     const pubComVersionRequest = {
-    //         Name: name,
-    //         ComponentVersion: componentVersion,
-    //         Org: org,
-    //         Author: author,
-    //         Description: description,
-    //         Keywords: keywords,
-    //         License: license
-    //     }
+  //     const req = new SlsModels.PublishComponentVersionRequest()
+  //     req.from_json_string(JSON.stringify(pubComVersionRequest));
+  //     return await this._call('PublishComponentVersion', req);
+  // }
 
-    //     const req = new SlsModels.PublishComponentVersionRequest()
-    //     req.from_json_string(JSON.stringify(pubComVersionRequest));
-    //     return await this._call('PublishComponentVersion', req);
-    // }
-
-
-    // async fetchComponentMetadata(name, version) {
-    //     const componentVersion = {
-    //         Name: name,
-    //         ComponentVersion: version
-    //     }
-    //     const req = new SlsModels.FetchComponentMetadataRequest();
-    //     req.from_json_string(JSON.stringify(componentVersion));
-    //     return await this._call('FetchComponentMetadata', req);
-    // }
+  // async fetchComponentMetadata(name, version) {
+  //     const componentVersion = {
+  //         Name: name,
+  //         ComponentVersion: version
+  //     }
+  //     const req = new SlsModels.FetchComponentMetadataRequest();
+  //     req.from_json_string(JSON.stringify(componentVersion));
+  //     return await this._call('FetchComponentMetadata', req);
+  // }
 }
 
-module.exports = Serverless;
+module.exports = Serverless
