@@ -111,14 +111,11 @@ class Serverless {
     if (!body.component || !body.component.componentName || !body.component.version) {
       throw new Error('componentName and version are required.')
     }
-    const pubComponent = {
-      ComponentName: body.component.componentName,
-      ComponentVersion: body.component.version,
-      Body: body
-    }
 
     const req = new SlsModels.PrePublishComponentRequest()
-    req.from_json_string(JSON.stringify(pubComponent))
+    req.ComponentVersion = body.component.version
+    req.ComponentName = body.component.componentName
+    req.Body = JSON.stringify(body)
     return await this._call('PrePublishComponent', req)
   }
 
@@ -126,13 +123,11 @@ class Serverless {
     if (!body.componentName || !body.componentVersion) {
       throw new Error('componentName and componentVersion are required.')
     }
-    const pubComponent = {
-      ComponentName: body.componentName,
-      ComponentVersion: body.componentVersion,
-      Body: body
-    }
+  
     const req = new SlsModels.PostPublishComponentRequest()
-    req.from_json_string(JSON.stringify(pubComponent))
+    req.ComponentVersion = body.componentVersion
+    req.ComponentName = body.componentName
+    req.Body = JSON.stringify(body)
     return await this._call('PostPublishComponent', req)
   }
 
