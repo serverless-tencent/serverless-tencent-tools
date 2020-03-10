@@ -29,7 +29,7 @@ class GetUserAuthInfo {
       const req = http.request(options, function(res) {
         res.setEncoding('utf8')
         res.on('data', function(chunk) {
-          resolve(chunk)
+          resolve(JSON.parse(chunk))
         })
       })
 
