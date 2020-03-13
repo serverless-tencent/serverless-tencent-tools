@@ -158,13 +158,8 @@ class Serverless {
     return this._call('SaveInstance', req)
   }
 
-  async listInstances({orgName, orgUid, appName, stageName}) {
-    assert(appName, 'The request is missing a required parameter appName')
-    assert(stageName, 'The request is missing a required parameter stageName')
-    
+  async listInstances({orgName, orgUid}) {
     const req = new SlsModels.ListInstancesRequest()
-    req.AppName = appName;
-    req.StageName = stageName;
     req.Body = JSON.stringify(arguments[0])
     return this._call('ListInstances', req)
   }
