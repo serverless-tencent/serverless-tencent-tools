@@ -1,4 +1,3 @@
-const urlencode = require('urlencode')
 const { GetUserInformationResponse, UserInformationClient } = require('../cam/index')
 const { scf, common } = require('../../library')
 const ScfModels = scf.v20180416.Models

@@ -71,7 +71,8 @@ class BindRole {
       }
       createPolicyModels.from_json_string(JSON.stringify(createBody))
       await createPolicyHandler(createPolicyModels)
-    } catch (e) {}
+    } catch (e) {
+    }
 
     // 寻找roleList，防止出现区分大小问题
     // 在cam测，role实际上是区分大小写，例如SLS_QcsRole和SLS_QCSRole就是两个角色
@@ -93,7 +94,9 @@ class BindRole {
               break
             }
           }
-        } catch (e) {}
+        } catch (e) {
+          pageRoleCount = 0
+        }
         await this.sleep(340) // 有频率限制 1分3次
       }
     } catch (e) {}
@@ -150,7 +153,9 @@ class BindRole {
               }
             }
             await this.sleep(340) // 有频率限制 1分3次
-          } catch (e) {}
+          } catch (e) {
+            pagePolicyCount = 0
+          }
         }
       } catch (e) {}
     }
@@ -172,7 +177,9 @@ class BindRole {
         }
         pagePolicyCount = pagePolicList.List.length
         await this.sleep(340) // 有频率限制 1分3次
-      } catch (e) {}
+      } catch (e) {
+        pagePolicyCount = 0
+      }
     }
     const attachRolePolicyModels = new camModels.AttachRolePolicyRequest()
     const attachRolePolicyHandler = util.promisify(
