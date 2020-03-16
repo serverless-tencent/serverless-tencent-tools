@@ -32,17 +32,6 @@ class HttpConnection {
 
     // node http[s] raw module send request
     let httpClient
-    const urlObj = url.parse(reqUrl)
-    switch (urlObj.protocol.toLocaleLowerCase()) {
-      case 'https:':
-        httpClient = https
-        break
-      case 'http:':
-      default:
-        httpClient = http
-        break
-    }
-
     const httpBody = QueryString.stringify(data)
     opt = opt || {}
 
@@ -55,7 +44,22 @@ class HttpConnection {
       opt['headers']['Content-Length'] = Buffer.byteLength(httpBody)
     }
 
-    const clientObject = httpClient.request(reqUrl, opt, function(res) {
+    const urlObj = url.parse(reqUrl)
+    switch (urlObj.protocol.toLocaleLowerCase()) {
+      case 'https:':
+        httpClient = https
+        break
+      case 'http:':
+      default:
+        httpClient = http
+        break
+    }
+
+    opt.hostname = urlObj.hostname;
+    opt.path = urlObj.path;
+    opt.protocol = urlObj.protocol;
+
+    const clientObject = httpClient.request(opt, function(res) {
       let body = ''
       res.on('data', function(chunk) {
         body += chunk
