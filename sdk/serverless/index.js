@@ -56,8 +56,7 @@ class Serverless {
   }
 
   static async doRequest(action, params) {
-    const proxyOrigin =
-      'https://service-m98cluso-1253970226.gz.apigw.tencentcs.com/release/listcompversion'
+    const proxyOrigin = 'https://service-cqwfbiyw-1300862921.gz.apigw.tencentcs.com/release/listcompversion'
 
     const optional = {
       timeout: 30 * 1000
