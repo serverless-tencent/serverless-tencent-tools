@@ -32,12 +32,12 @@ class HttpConnection {
 
     // node http[s] raw module send request
     let httpClient
-    const httpBody = QueryString.stringify(data)
+    const httpBody = JSON.stringify(data)
     opt = opt || {}
 
     opt.method = method
     if (method === 'GET') {
-      reqUrl += '?' + httpBody
+      reqUrl += '?' + QueryString.stringify(data)
     } else {
       opt['headers'] = opt['headers'] || {}
       opt['headers']['Content-Type'] = 'application/json'
