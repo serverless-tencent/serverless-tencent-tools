@@ -401,4 +401,29 @@ ret = await Serverless.getComponentVersion('name', 'version');
 console.log(ret)
 ```
 
+### Scf 扩展API
+```javascript
+const { Others } = require('serverless-tencent-tools')
+const ScfEx = Others.Scf;
+
+const scfEx = new ScfEx({
+  appid: appid,
+  secret_id: secret_id,
+  secret_key: secret_key,
+  options: {
+    region: 'ap-guangzhou',
+    token: 'token'
+  }
+})
+
+const ret = await scfEx.publishLayerVersion({
+  layerName: 'name',
+  compatibleRuntimes: ['Nodejs8.9'],
+  description: 'test node layer',  // optional
+  zipFilePath: 'path/to/layer.zip' // the file size limit 10MB
+});
+
+console.log(ret)
+```
+
 （* 该接口目前为1.0版本，后期会增加其复杂度，但是接口规范不会变。）
