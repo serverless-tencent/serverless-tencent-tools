@@ -1,6 +1,7 @@
 module.exports = {
   Cam: require('./cam/index'),
   Login: require('./login/index'),
+  Debug: require('./debug/index'),
   Logs: require('./logs/index'),
   Account: require('./account/index'),
   Others: require('./others/index'),
