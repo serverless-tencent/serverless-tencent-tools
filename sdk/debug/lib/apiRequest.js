@@ -31,7 +31,7 @@ const ApiRequest = function (auth, func, Region, debugOptions) {
 }
 
 ApiRequest.prototype.request = async function (action, params) {
-    return this.client.request(
+    const result = await this.client.request(
         {
             Action: action,
             ...this.commonParams,
@@ -40,6 +40,10 @@ ApiRequest.prototype.request = async function (action, params) {
         this.debugOptions,
         true
     );
+    if (result.Response && result.Response.Error) {
+        throw Error(result.Response.Error.Message)
+    }
+    return result
 }
 
 ApiRequest.prototype.startDebugging = async function (params) {
@@ -60,7 +64,7 @@ ApiRequest.prototype.getDebuggingInfo = async function (params) {
                     count++
                     if (count > 20) {
                         clearInterval(timer)
-                        reject({
+                        resolve({
                             "Response":
                             {
                                 "Error":
