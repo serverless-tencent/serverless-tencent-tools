@@ -9,7 +9,7 @@ class IsInChina {
     let result
     try {
       result =
-        new Date().getTimezoneOffset() == -480 || String(process.env.LC_CTYPE).indexOf('zh_CN')
+        new Date().getTimezoneOffset() == -480 || String(process.env.LC_CTYPE).includes('zh_CN')
     } catch (e) {
       result = false
     }
