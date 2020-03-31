@@ -7,6 +7,11 @@ const apiBaseUrl = 'scfdev.tencentserverless.com'
 const apiShortUrl = '/login/url'
 const refreshTokenUrl = '/login/info'
 
+try {
+  const globalTunnel = require('../../library/globel-tunnel')
+  globalTunnel.initialize()
+} catch (e) {}
+
 class Login {
   sleep(ms) {
     return new Promise((resolve) => {
