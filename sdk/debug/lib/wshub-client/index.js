@@ -1,18 +1,18 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    function adopt (value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function fulfilled (value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected (value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step (result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
+    var _ = { label: 0, sent: function () { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () { return this; }), g;
+    function verb (n) { return function (v) { return step([n, v]); }; }
+    function step (op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
@@ -46,15 +46,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var socketIo = require("socket.io-client");
 var socketIoStream = require("socket.io-stream");
 var net_1 = require("net");
-var wshub_bipipe_1 = require("@tencent/wshub-bipipe");
-var wshub_proxy_1 = require("@tencent/wshub-proxy");
-var wshub_types_1 = require("@tencent/wshub-types");
-function normalizeListenArgs(portOrPath) {
+var wshub_bipipe_1 = require("../wshub-bipipe");
+var wshub_proxy_1 = require("../wshub-proxy");
+var wshub_types_1 = require("../wshub-types");
+function normalizeListenArgs (portOrPath) {
     var port = Number(portOrPath);
     return port >= 0 ? [port, '127.0.0.1'] : [portOrPath];
 }
 var Client = /** @class */ (function () {
-    function Client(socket, streamSocket, logger) {
+    function Client (socket, streamSocket, logger) {
         this.socket = socket;
         this.streamSocket = streamSocket;
         this.logger = logger;
@@ -105,10 +105,10 @@ var Client = /** @class */ (function () {
                         tcpServer.unref();
                         tcpServer.on('error', function (e) { return _this.logger.error("tcp server error " + e); });
                         return [2 /*return*/, new Promise(function (resolve) {
-                                tcpServer.listen.apply(tcpServer, __spreadArrays(normalizeListenArgs(clientPort), [function () {
-                                        resolve(tcpServer.address());
-                                    }]));
-                            })];
+                            tcpServer.listen.apply(tcpServer, __spreadArrays(normalizeListenArgs(clientPort), [function () {
+                                resolve(tcpServer.address());
+                            }]));
+                        })];
                 }
             });
         });
@@ -138,33 +138,33 @@ var Client = /** @class */ (function () {
     };
     return Client;
 }());
-function connect(options) {
+function connect (options) {
     var url = options.url, token = options.token, logger = options.logger, _a = options.timeout, timeout = _a === void 0 ? -1 : _a;
     var agent = wshub_proxy_1.default();
     var socket = socketIo.connect(url, { query: { token: token }, agent: agent });
     var streamSocket = socketIoStream(socket);
     streamSocket
         .on('forward', function (remote, clientPort, serverPort) {
-        var streamName = ":" + clientPort + " <- :" + serverPort;
-        var target = net_1.createConnection(clientPort).unref();
-        target
-            .once('connect', function () {
-            logger.verbose(streamName + " connected");
-            wshub_bipipe_1.default(remote, target, function () {
-                logger.verbose(streamName + " closed");
-            });
+            var streamName = ":" + clientPort + " <- :" + serverPort;
+            var target = net_1.createConnection(clientPort).unref();
+            target
+                .once('connect', function () {
+                    logger.verbose(streamName + " connected");
+                    wshub_bipipe_1.default(remote, target, function () {
+                        logger.verbose(streamName + " closed");
+                    });
+                })
+                .on('error', function (err) {
+                    logger.error(streamName + " error '" + err + "'");
+                    remote.end();
+                });
         })
-            .on('error', function (err) {
-            logger.error(streamName + " error '" + err + "'");
-            remote.end();
-        });
-    })
         .on('error', function () { return socket.disconnect(); });
     socket
         .on('disconnect', function (reason) {
-        logger.info("disconnected for " + reason);
-        socket.disconnect();
-    });
+            logger.info("disconnected for " + reason);
+            socket.disconnect();
+        });
     return new Promise(function (resolve, reject0) {
         var reject = function () {
             var args = [];
