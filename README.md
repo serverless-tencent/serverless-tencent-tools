@@ -19,7 +19,7 @@
 基本使用方法(开启调试和实时日志)：
 ```javascript
 const tencentCloudTools = require('../../serverless-tencent-tools')
-const sdk = tencentCloudTools.Debug
+const Sdk = tencentCloudTools.Debug
 const region = 'ap-aaaaa'
 const auth = {
   SecretId: '****',
@@ -28,8 +28,12 @@ const auth = {
 const func = {
   functionName: 'course'
 }
-console.log(sdk.remoteDebug(auth, func, region))
+const sdk = new Sdk(auth, func, region)
+// 开启调试和实时日志
+await sdk.remoteDebug()
 
+// 调试后结束
+await sdk.stop()
 ```
 输出结果：无
 
@@ -60,23 +64,6 @@ func参数描述：
 输出参数：
 
 无输出。调试和实时日志能力都集成在接口里面实现
-
-基本使用方法(结束调试模式)：
-```javascript
-const tencentCloudTools = require('../../serverless-tencent-tools')
-const sdk = tencentCloudTools.Debug
-const region = 'ap-aaaaa'
-const auth = {
-  SecretId: '****',
-  SecretKey: '*****'
-}
-const func = {
-  functionName: 'course'
-}
-console.log(sdk.stop(auth, func, region))
-
-```
-输出结果：stop接口返回内容
 
 ### 实时日志功能
 基本使用方法(getAddr)：

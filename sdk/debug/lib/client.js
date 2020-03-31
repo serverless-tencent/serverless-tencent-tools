@@ -29,8 +29,6 @@ const Client = function (options) {
 
 /**
  * connect to ws-hub service
- * @param url ws-hub service url
- * @param token ws-hub token
  * @returns the client promise
  */
 Client.prototype._connect = async function () {
@@ -40,7 +38,6 @@ Client.prototype._connect = async function () {
 
 /**
  * forward for debug
- * @param client ws-hub client
  * @returns the client local port
  */
 Client.prototype.forwardDebug = async function () {
@@ -52,7 +49,6 @@ Client.prototype.forwardDebug = async function () {
 
 /**
  * forward for real time log
- * @param client ws-hub client
  * @returns the client local port
  */
 Client.prototype.forwardLog = async function () {
@@ -60,6 +56,16 @@ Client.prototype.forwardLog = async function () {
         this.client = await this._connect()
     }
     return this.client.forward(duplex(process.stdout, null, { end: false }), this.logRemotePort)
+}
+
+/**
+ * close the client
+ * @returns close result
+ */
+Client.prototype.close = async function () {
+    if (this.client) {
+        return this.client.close()
+    }
 }
 
 module.exports = Client
