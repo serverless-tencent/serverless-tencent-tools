@@ -10,6 +10,8 @@ const Sign = require('../../library/common/sign')
 const Credential = common.Credential
 const HttpProfile = common.HttpProfile
 const ClientProfile = common.ClientProfile
+const TencentCloudSDKHttpException = require('../../library/common/exception/tencent_cloud_sdk_exception')
+
 
 class ScfEx {
   constructor({ appid, secret_id, secret_key, options }) {
