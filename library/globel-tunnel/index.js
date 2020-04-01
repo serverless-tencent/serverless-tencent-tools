@@ -129,7 +129,6 @@ globalTunnel.initialize = function() {
     globalTunnel.isProxying = true
   } catch (e) {
     resetGlobals()
-    throw e
   }
 }
 
