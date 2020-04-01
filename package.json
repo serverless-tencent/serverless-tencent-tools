@@ -1,7 +1,7 @@
 {
   "name": "serverless-tencent-tools",
   "description": "Tencent Cloud Tools For Serverless Framewoek",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "./index.js",
   "publishConfig": {
     "access": "public"
