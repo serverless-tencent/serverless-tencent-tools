@@ -5,6 +5,7 @@
 
 ## 已支持能力
 
+- [在线调试&实时日志功能](#在线调试&实时日志功能)
 - [实时日志功能](#实时日志功能)
 - [获取用户信息](#获取用户信息)
 - [一键登录功能](#一键登录功能)
@@ -12,8 +13,57 @@
 - [判断中国用户](#判断中国用户)
 - [ServerlessApi](#ServerlessApi)
 
-
 ## 基本功能
+
+### 在线调试&实时日志功能
+基本使用方法(开启调试和实时日志)：
+```javascript
+const tencentCloudTools = require('../../serverless-tencent-tools')
+const Sdk = tencentCloudTools.Debug
+const region = 'ap-aaaaa'
+const auth = {
+  SecretId: '****',
+  SecretKey: '*****'
+}
+const func = {
+  functionName: 'course'
+}
+const sdk = new Sdk(auth, func, region)
+// 开启调试和实时日志
+await sdk.remoteDebug()
+
+// 调试后结束
+await sdk.stop()
+```
+输出结果：无
+
+输入参数：
+
+| 参数 | 必须 | 默认 | 描述 | 
+| --- | --- | --- | ---|
+| auth | 是 | - | 鉴权信息 |
+| func | 是 | - | 函数信息 |
+| region | 否 | ap-guangzhou | 地域 |
+
+auth参数描述：
+
+| 参数 | 必须 | 默认 | 描述 | 
+| --- | --- | --- | ---|
+| SecretId | 是 | - | 用户密钥Id |
+| SecretKey | 是 | - | 用户密钥Key |
+| token | 否 | - | 临时密钥需要传递此参数 |
+
+func参数描述：
+
+| 参数 | 必须 | 默认 | 描述 | 
+| --- | --- | --- | ---|
+| functionName | 是 | - | 地域 |
+| nameSpace | 否 | default | 命名空间 |
+| qualifier | 否 | $LATEST | 版本 |
+
+输出参数：
+
+无输出。调试和实时日志能力都集成在接口里面实现
 
 ### 实时日志功能
 基本使用方法(getAddr)：
