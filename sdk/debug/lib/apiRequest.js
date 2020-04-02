@@ -91,4 +91,32 @@ ApiRequest.prototype.getDebuggingInfo = async function (params) {
     return getDebuggingInfoPm()
 }
 
+ApiRequest.prototype.getFunction = async function (params) {
+    const getInfoPm = () => {
+        return new Promise((resolve, reject) => {
+            let info
+            let count = 0
+            let timer = setInterval(async () => {
+                try {
+                    count++
+                    if (count > 20) {
+                        clearInterval(timer)
+                        resolve()
+                    }
+                    info = await this.request('GetFunction', params) || {}
+                    const { Response = {} } = info
+                    if (Response.Status === 'Active') {
+                        resolve()
+                        clearInterval(timer)
+                    }
+                } catch (e) {
+                    clearInterval(timer)
+                    reject(e)
+                }
+            }, 2000);
+        })
+    }
+    return getInfoPm()
+}
+
 module.exports = ApiRequest
