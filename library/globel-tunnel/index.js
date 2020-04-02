@@ -25,6 +25,20 @@ const ORIGINALS = {
   }
 }
 
+function semverGte(v1, v2) {
+  const arr1 = v1.slice(1).split('.')
+  const arr2 = v2.slice(1).split('.')
+  let result = true
+  arr1.forEach((item, index) => {
+    const n1 = Number(item)
+    const n2 = Number(arr2[index])
+    if (n1 < n2) {
+      result = false
+    }
+  })
+  return result
+}
+
 function resetGlobals() {
   // reset http
   http.globalAgent = ORIGINALS.http.globalAgent
@@ -118,8 +132,14 @@ globalTunnel.initialize = function() {
     const connectHttp = conf.connect === 'both'
     const connectHttps = conf.connect !== 'neither'
 
-    http.globalAgent = globalTunnel._makeAgent(conf, 'http', connectHttp)
-    https.globalAgent = globalTunnel._makeAgent(conf, 'https', connectHttps)
+    // Overriding globalAgent was added in v11.7.
+    // @see https://nodejs.org/uk/blog/release/v11.7.0/
+    try {
+      if (semverGte(process.version, 'v11.7.0')) {
+        http.globalAgent = globalTunnel._makeAgent(conf, 'http', connectHttp)
+        https.globalAgent = globalTunnel._makeAgent(conf, 'https', connectHttps)
+      }
+    } catch (e) {}
 
     http.request = globalTunnel._makeHttp('request', http, 'http')
     https.request = globalTunnel._makeHttp('request', https, 'https')
