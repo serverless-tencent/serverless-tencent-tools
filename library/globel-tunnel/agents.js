@@ -28,7 +28,9 @@ function mixinProxying(agent, proxyOpts) {
 
 function OuterHttpAgent(opts) {
   HttpAgent.call(this, opts)
-  mixinProxying(this, opts.proxy)
+  try {
+    mixinProxying(this, opts.proxy)
+  } catch (e) {}
 }
 util.inherits(OuterHttpAgent, HttpAgent)
 exports.OuterHttpAgent = OuterHttpAgent
@@ -38,7 +40,9 @@ exports.OuterHttpAgent = OuterHttpAgent
  */
 function OuterHttpsAgent(opts) {
   HttpsAgent.call(this, opts)
-  mixinProxying(this, opts.proxy)
+  try {
+    mixinProxying(this, opts.proxy)
+  } catch (e) {}
 }
 util.inherits(OuterHttpsAgent, HttpsAgent)
 exports.OuterHttpsAgent = OuterHttpsAgent
