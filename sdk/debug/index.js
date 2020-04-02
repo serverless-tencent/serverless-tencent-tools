@@ -6,9 +6,20 @@ const RemoteDebug = function (auth, func, Region = 'ap-guangzhou') {
     this.func = func
     this.Region = Region
     this.request = new ApiRequest(auth, func, Region)
+    this.isFirst = true
 }
 
 RemoteDebug.prototype.remoteDebug = async function () {
+    try {
+        if (this.isFirst) {
+            // 初试进来不管什么情况，调用一下停止，忽略报错
+            await this.request.stopDebugging()
+            await this.request.getFunction()
+        }
+        this.isFirst = false
+    } catch (e) {
+        // do nothing
+    }
     try {
         await this.request.startDebugging()
         const { Url, Token } = await this.request.getDebuggingInfo()
@@ -31,12 +42,22 @@ RemoteDebug.prototype.remoteDebug = async function () {
     }
 }
 
+const delay = function (time) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve()
+        }, time)
+    })
+}
+
 RemoteDebug.prototype.stop = async function () {
     try {
         if (this.client) {
             this.client.close()
         }
-        return await this.request.stopDebugging()
+        await this.request.stopDebugging()
+        await delay(1000)
+        await this.request.getFunction()
     } catch (e) {
         console.error(e.message)
     }
