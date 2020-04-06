@@ -8,7 +8,7 @@ const RemoteDebug = function(auth, func, Region = 'ap-guangzhou') {
   this.request = new ApiRequest(auth, func, Region)
 }
 
-RemoteDebug.prototype.remoteDebug = async function() {
+RemoteDebug.prototype.remoteDebug = async function(cliCallback) {
   try {
     await this.request.ensureFunctionState()
     await this.request.startDebugging()
@@ -22,22 +22,24 @@ RemoteDebug.prototype.remoteDebug = async function() {
     this.client = new WshubClient({ Url, Token })
     try {
       await this.client.forwardDebug()
-      console.log('Debugging listening on ws://127.0.0.1:9222.')
-      console.log('For help see https://nodejs.org/en/docs/inspector.')
-      console.log(
+      cliCallback('Debugging listening on ws://127.0.0.1:9222.')
+      cliCallback('For help see https://nodejs.org/en/docs/inspector.')
+      cliCallback(
         'Please open chorme, and visit chrome://inspect, click [Open dedicated DevTools for Node] to debug your code.'
       )
     } catch (e) {
-      console.error('Debug init error. Please confirm if the local port 9222 is used')
+      cliCallback('Debug init error. Please confirm if the local port 9222 is used', {
+        type: 'error'
+      })
     }
-    console.log('--------------------- The realtime log ---------------------')
-    await this.client.forwardLog()
+    cliCallback('--------------------- The realtime log ---------------------')
+    await this.client.forwardLog(cliCallback.stdout)
   } catch (e) {
-    console.error(e.message)
+    cliCallback(e.message, { type: 'error' })
   }
 }
 
-RemoteDebug.prototype.stop = async function() {
+RemoteDebug.prototype.stop = async function(cliCallback) {
   try {
     if (this.client) {
       this.client.close()
@@ -48,7 +50,7 @@ RemoteDebug.prototype.stop = async function() {
       await this.request.stopDebugging()
     }
   } catch (e) {
-    console.error(e.message)
+    cliCallback(e.message, { type: 'error' })
   }
 }
 
