@@ -6,13 +6,12 @@ class IsInChina {
       new DataReport().report({ name: 'DetectChinaUser' })
     } catch (e) {}
 
-    let result
-    try {
-      result =
-        new Date().getTimezoneOffset() == -480 || String(process.env.LC_CTYPE).includes('zh_CN')
-    } catch (e) {
-      result = false
-    }
+    const result =
+      process.env.SLS_GEO_LOCATION === 'cn' ||
+      new Intl.DateTimeFormat('en', { timeZoneName: 'long' })
+        .format()
+        .includes('China Standard Time')
+
     return { IsInChina: result }
   }
 }
